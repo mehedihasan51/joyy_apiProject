@@ -1,10 +1,15 @@
 <?php
 
+use App\Models\Booking;
+use App\Mail\BookingCountMail;
 use App\Console\Commands\MakeDto;
-use App\Console\Commands\MakeInterface;
-use App\Console\Commands\MakeService;
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Mail;
+use App\Console\Commands\MakeService;
+use App\Console\Commands\MakeInterface;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
+use App\Http\Controllers\Api\Booking\BookingController;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -24,3 +29,8 @@ Artisan::command('make:interface {name}', function ($name) {
 Artisan::command('make:dto {name}', function ($name) {
     $this->call(MakeDto::class, ['name' => $name]);
 });
+
+
+Schedule::call(function () {
+    Mail::to('admin@gmail.com')->send(new BookingCountMail());
+})->everyMinute(); // Adjust the frequency as needed
